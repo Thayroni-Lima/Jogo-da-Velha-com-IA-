@@ -16,6 +16,7 @@
 ### - Funções: Organização modular do código em blocos de código independentes (funções), facilitando a compreensão, manutenção e reutilização do código
 ### - Entrada e Saídas de Dados: Uso de funções para obter dados do usuário (entrada) e exibir informações (saída) durante a execução do programa.
 ### - Algoritmo Minimax: Abordagem algorítmica para tomada de decisões estratégicas em jogos, explorando todas as possíveis jogadas para determinar a melhor escolha, minimizando perdas ou maximizando ganhos.
+### - Função de retorno randômico: necessário para implementação da Inteligência da Máquina quando optado por se jogar contra ela.
 
 ## Implementação
 
