@@ -1,38 +1,55 @@
-    void movO(){
-        if ((v % 2) == 0) {
-            jogadaO= 'z';
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
 
-            printf("Jogador 'O' sua vez.\n");
-            printf("Escolha em qual posição do jogo o  'O' ficará:\n");
-            scanf(" %c", &jogadaO);
+int main(){
+    int i, j;
+    char casasDisponiveis[9] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
+    char vitoria [8][3] = {
+    //vitoria em horizontal:
+    {casasDisponiveis[0],casasDisponiveis[1],casasDisponiveis[2]},
+    {casasDisponiveis[3],casasDisponiveis[4],casasDisponiveis[5]},
+    {casasDisponiveis[6],casasDisponiveis[7],casasDisponiveis[8]},
+    //vitoria em vertical:
+    {casasDisponiveis[0],casasDisponiveis[3],casasDisponiveis[6]},
+    {casasDisponiveis[1],casasDisponiveis[4],casasDisponiveis[7]},
+    {casasDisponiveis[2],casasDisponiveis[5],casasDisponiveis[8]},
+    //vitoria em diagonal:
+    {casasDisponiveis[0],casasDisponiveis[4],casasDisponiveis[8]},
+    {casasDisponiveis[2],casasDisponiveis[4],casasDisponiveis[6]}
+    };
 
-            // Inserindo o O no tabuleiro (tab)
-            for (i = 0; i < 3; i++) {
-                for (j = 0; j < 3; j++) {
-                    if (tab[i][j] == jogadaO) {
-                        tab[i][j] = 'O';
-                    }
-                }
+    void atualizarVitoria(char vitoria[8][3], char casasDisponiveis[9]) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                vitoria[i][j] = casasDisponiveis[i * 3 + j];
             }
-            printTab(tab);
         }
     }
 
+    for(i = 0; i < 8; i++){
+        for(j = 0; j < 3; j++){
+            printf("%c", vitoria[i][j]);
+        }
+        printf("\n");
+    }
 
-            // Jogada de 'O'
-        if ((v % 2) != 0) {
-            jogadaO = 'z';
-
-            printf("Jogador 'O' sua vez:\n");
-            printf("Escolha em qual posição do jogo a 'O' ficará:\n");
-            scanf(" %c", &jogadaO);
-
-            for (i = 0; i < 3; i++) {
-                for (j = 0; j < 3; j++) {
-                    if (tab[i][j] == jogadaO) {
-                        tab[i][j] = 'O';
-                    }
+    bool quemGanha(char XO){
+        for(i = 0; i < 8; i++){
+            for(j = 0; j < 0; i++){
+                if((vitoria[i][j] == XO) && (vitoria[i][j + 1] == XO) && (vitoria[i][j +2] == XO)){
+                    return true;
                 }
             }
-            printTab(tab);
         }
+        return false;
+    }
+
+    if(quemGanha('X') == true){
+        printf("vitoria");
+    }else{
+        printf("derrota");
+    }
+
+    return 0;
+}

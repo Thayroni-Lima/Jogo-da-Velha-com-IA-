@@ -3,71 +3,175 @@
 #include <stdlib.h>
 
 int main(){
+    //onde serão inputados as entrada ('0' e 'X')
     char tab[3][3] = {
         {'a', 'b', 'c'},
         {'d', 'e', 'f'},
         {'g', 'h', 'i'}
     };
+    //array para controlar a disponibilidade de casas e para verificar o ganho na horizontal, vertical ou diagonal
+    char casasDisponiveis[9] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
+    //contadores gerais. O v serve para contar o total de jogadas (no máximo 9 em um tab de 3x3)
     int i, j, v;
+    //variaveis para auxiliar a divisão de quando cada jogador vai jogar
     char jogadaX, jogadaO;
-    
+    //necessário criar essa variável para, quando um jogador jogar numa casa indisponível (fora do range [a - i] ou numa casa já jogada), ele poder repetir a jogada até jogar numa casa disponível
+    bool laco;
+
     //-----------------------------------FUNÇÕES---------------------------------------
+
+    //Função para verificar disponibilidade de casa e garantir a casa não seja jogada novamente
+    bool verDis(char jogada, const char XO){
+        for(int i = 0; i < 9; i++){
+            if(jogada == casasDisponiveis[i]){
+                casasDisponiveis[i] = XO;
+                return true;
+            }
+        }
+        return false;
+    }
+
     //função para Printar tabuleiro
     void printTab(){
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 printf(" %c ", tab[i][j]);
+                if (j < 2){
+                    printf("|");  
+                }
             }
             printf("\n");
-        };
+            if(i < 2){
+                printf("-----------\n");
+            }
+        }
         printf("\n");
     }
 
     //função para a jogada de 'X'
     void movX(){
+        //1ª tentativa
         if ((v % 2) == 0) {
-            jogadaX = 'z';
+            printTab(tab);
+            jogadaX = '\0';
 
             printf("Jogador 'X' sua vez.\n");
-            printf("Escolha em qual posição do jogo o  'X' ficará:\n");
+            printf("Escolha em qual posição do jogo o 'X' ficará:\n");
             scanf(" %c", &jogadaX);
 
-            // Inserindo o X no tabuleiro (tab)
-            for (i = 0; i < 3; i++) {
-                for (j = 0; j < 3; j++) {
-                    if (tab[i][j] == jogadaX) {
-                        tab[i][j] = 'X';
+            //Inserindo o X no tabuleiro (tab) se a casa estiver disponível
+            if(verDis(jogadaX, 'X') == true){
+                for (i = 0; i < 3; i++) {
+                    for (j = 0; j < 3; j++) {
+                        if (tab[i][j] == jogadaX){
+                            tab[i][j] = 'X';
+                        }
                     }
                 }
             }
-            printTab(tab);
+            
+            //Caso não disponível, laço while para jogar casa certa
+            else{
+                while(laco == false){
+                    printTab(tab);
+                    jogadaX = '\0';
+
+                    printf("Jogada não disponível. Tente novamente.\n");
+                    printf("Escolha em qual posição do jogo o 'X' ficará:\n");
+                    scanf(" %c", &jogadaX);
+
+                    // Inserindo o X no tabuleiro (tab)
+                    if(verDis(jogadaX, 'X') == true){
+                        laco = true;
+                        for (i = 0; i < 3; i++) {
+                            for (j = 0; j < 3; j++) {
+                                if (tab[i][j] == jogadaX) {
+                                    tab[i][j] = 'X';
+                                }
+                            }
+                        }
+                    }
+                }
+                laco = false;
+            }
         }
     }
     
     //função para a jogada de 'O'
     void movO(){
+        //1ª tentativa
         if ((v % 2) != 0) {
-            jogadaO= 'z';
+            printTab(tab);
+            jogadaO = '\0';
 
             printf("Jogador 'O' sua vez.\n");
-            printf("Escolha em qual posição do jogo o  'O' ficará:\n");
+            printf("Escolha em qual posição do jogo o 'O' ficará:\n");
             scanf(" %c", &jogadaO);
 
-            // Inserindo o O no tabuleiro (tab)
-            for (i = 0; i < 3; i++) {
-                for (j = 0; j < 3; j++) {
-                    if (tab[i][j] == jogadaO) {
-                        tab[i][j] = 'O';
+            //Inserindo o O no tabuleiro (tab) se a casa estiver disponível
+            if(verDis(jogadaO, 'O') == true){
+                for (i = 0; i < 3; i++) {
+                    for (j = 0; j < 3; j++) {
+                        if (tab[i][j] == jogadaO){
+                            tab[i][j] = 'O';
+                        }
                     }
                 }
             }
-            printTab(tab);
+            
+            //Caso não disponível, laço while para jogar casa certa
+            else{
+                while(laco == false){
+                    printTab(tab);
+                    jogadaO = '\0';
+
+                    printf("Jogada não disponível. Tente novamente.\n");
+                    printf("Escolha em qual posição do jogo o 'O' ficará:\n");
+                    scanf(" %c", &jogadaO);
+
+                    // Inserindo o O no tabuleiro (tab)
+                    if(verDis(jogadaO, 'O') == true){
+                        laco = true;
+                        for (i = 0; i < 3; i++) {
+                            for (j = 0; j < 3; j++) {
+                                if (tab[i][j] == jogadaO) {
+                                    tab[i][j] = 'O';
+                                }
+                            }
+                        }
+                    }
+                }
+                laco = false;
+            }
         }
     }
 
-    //----------------------------------FIM DE FUNÇÕES-------------------------------------------
+    //função para verificar quem pode ter ganhado até o momento que foi chamada
+    int quemGanha(char XO){
+        //Horizontal
+        if((casasDisponiveis[0] == XO && casasDisponiveis[1] == XO && casasDisponiveis[2] == XO) || 
+        (casasDisponiveis[3] == XO && casasDisponiveis[4] == XO && casasDisponiveis[5] == XO) ||
+        (casasDisponiveis[6] == XO && casasDisponiveis[7] == XO && casasDisponiveis[8] == XO)
+        ){
+            return 1;
+        } 
+        //vertical
+        else if((casasDisponiveis[0] == XO && casasDisponiveis[3] == XO && casasDisponiveis[6] == XO) || 
+        (casasDisponiveis[1] == XO && casasDisponiveis[4] == XO && casasDisponiveis[7] == XO) ||
+        (casasDisponiveis[2] == XO && casasDisponiveis[5] == XO && casasDisponiveis[8] == XO)
+        ){
+            return 2;
+        }
+        //diagonal
+        else if((casasDisponiveis[0] == XO && casasDisponiveis[4] == XO && casasDisponiveis[8] == XO) || 
+        (casasDisponiveis[2] == XO && casasDisponiveis[4] == XO && casasDisponiveis[6] == XO)
+        ){
+            return 3;
+        }
 
-/*---------------------------------------------------------------------------------------------*/
+    }
+
+    //----------------------------------FIM DE FUNÇÕES-------------------------------------------
 
     //----------------------------------PROGRAMA-------------------------------------------
 
@@ -77,12 +181,55 @@ int main(){
     printf("---------------------------------------------------------\n\n");
 
     for(v = 0; v < 9; v++){ // for para as 9 jogadas
-        printf("%dª jogada:\n", v + 1);
 
+        printf("%dª jogada:\n\n", v + 1);
+
+        //jogada de X
         movX();
+        switch (quemGanha('X'))
+        {
+        case 1:
+            printf("X ganhou por vitória na horizontal\n");
+            printTab();
+            return 0;
+        
+        case 2:
+            printf("X ganhou por vitória na horizontal\n");
+            printTab();
+            return 0;
 
+        case 3:
+            printf("X ganhou por vitória na diagonal\n");
+            printTab();
+            return 0;
+        
+        default:
+        }
+
+
+        //jogada de O
         movO();
+        switch (quemGanha('O'))
+        {
+        case 1:
+            printf("O ganhou por vitória na horizontal\n");
+            printTab();
+            return 0;
+        
+        case 2:
+            printf("O ganhou por vitória na vertical\n");
+            printTab();
+            return 0;
+
+        case 3:
+            printf("O ganhou por vitória na diagonal\n");
+            printTab();
+            return 0;
+        
+        default:
+        }
+
+
     }
 
-    return 0;
 }

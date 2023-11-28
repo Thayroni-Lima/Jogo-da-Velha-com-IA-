@@ -3,67 +3,44 @@
 #include <stdlib.h>
 
 int main(){
-    char tab[3][3] = {
-        {'a', 'b', 'c'},
-        {'d', 'e', 'f'},
-        {'g', 'h', 'i'}
+    int i, j, k;
+    char casasDisponiveis[9] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
+    char vitoria [8][3] = {
+    //vitoria em horizontal:
+    {casasDisponiveis[0],casasDisponiveis[1],casasDisponiveis[2]},
+    {casasDisponiveis[3],casasDisponiveis[4],casasDisponiveis[5]},
+    {casasDisponiveis[6],casasDisponiveis[7],casasDisponiveis[8]},
+    //vitoria em vertical:
+    {casasDisponiveis[0],casasDisponiveis[3],casasDisponiveis[6]},
+    {casasDisponiveis[1],casasDisponiveis[4],casasDisponiveis[7]},
+    {casasDisponiveis[2],casasDisponiveis[5],casasDisponiveis[8]},
+    //vitoria em diagonal:
+    {casasDisponiveis[0],casasDisponiveis[4],casasDisponiveis[8]},
+    {casasDisponiveis[2],casasDisponiveis[4],casasDisponiveis[6]}
     };
-    int i, j, v;
-    char jogadaX, jogadaO;
 
-    //função para Printar tabuleiro
-    void printTab(char tab[3][3]){
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
-                printf(" %c ", tab[i][j]);
+    void atualizarVitoria(char vitoria[8][3], char casasDisponiveis[9]){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 3; j++) {
+                vitoria[i][j] = casasDisponiveis[(i * 3) + j];
             }
-            printf("\n");
-        };
-    }
-
-    for(v = 0; v < 9; v++){ // for para as 9 jogadas
-        printf("V igual a |%d|\n", v);
-
-        // Jogada de X
-        if ((v % 2) == 0) {
-            jogadaX = 'z';
-
-            printf("Jogador 'X' sua vez:\n");
-            printf("Escolha em qual posição do jogo o X ficará:\n");
-            scanf(" %c", &jogadaX);
-
-            // Inserindo o X no tabuleiro (tab)
-            for (i = 0; i < 3; i++) {
-                for (j = 0; j < 3; j++) {
-                    if (tab[i][j] == jogadaX) {
-                        tab[i][j] = 'X';
-                    }
-                }
-            }
-
-        printTab(tab);
-            
-        }
-
-        // Jogada de 'O'
-        else if ((v % 2) != 0) {
-            jogadaO = 'z';
-
-            printf("Jogador 'O' sua vez:\n");
-            printf("Escolha em qual posição do jogo a 'O' ficará:\n");
-            scanf(" %c", &jogadaO);
-
-            for (i = 0; i < 3; i++) {
-                for (j = 0; j < 3; j++) {
-                    if (tab[i][j] == jogadaO) {
-                        tab[i][j] = 'O';
-                    }
-                }
-            }
-
-            printTab(tab);
         }
     }
 
-    return 0;
+    for(i = 0; i < 9; i++){
+        printf("Digite:\n");
+        scanf("%c", &casasDisponiveis[i]);
+        atualizarVitoria(vitoria, casasDisponiveis);
+        for(j = 0; j < 9; j++){
+            printf("%c", casasDisponiveis[j]);
+        }
+        printf("\n");
+
+        for(j = 0; j < 8; j++){
+            for(k = 0; k < 3; k++){
+                printf("%c", vitoria[j][k]);
+            }
+        }
+
+    }
 }
