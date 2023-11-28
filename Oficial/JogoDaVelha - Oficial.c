@@ -4,14 +4,20 @@
 #include <time.h>
 
 int main(){
+
+    //onde serão inputados as entrada ('0' e 'X')
     char tab[3][3] = {
         {'a', 'b', 'c'},
         {'d', 'e', 'f'},
         {'g', 'h', 'i'}
     };
+    //array para controlar a disponibilidade de casas e para verificar o ganho na horizontal, vertical ou diagonal
     char casasDisponiveis[9] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
+    //contadores gerais. O v serve para contar o total de jogadas (no máximo 9 em um tab de 3x3)
     int i, j, v;
+    //variaveis para auxiliar a divisão de quando cada jogador vai jogar (jogadaX e O) e para definir a modalidade de cada jogaor (MJX e O - Máquina/Jogador)
     char jogadaX, jogadaO, MJX, MJO;
+    //necessário criar essa variável para, quando um jogador jogar numa casa indisponível (fora do range [a - i] ou numa casa já jogada), ele poder repetir a jogada até jogar numa casa disponível
     bool laco;
 
     //-----------------------------------FUNÇÕES---------------------------------------
@@ -256,6 +262,7 @@ int main(){
             return 0;
         
         default:
+            break;
         }
 
 
@@ -279,6 +286,7 @@ int main(){
             return 0;
         
         default:
+            break;
         }
     }
 
