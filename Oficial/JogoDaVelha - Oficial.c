@@ -3,231 +3,229 @@
 #include <stdlib.h>
 #include <time.h>
 
-int main(){
+//onde serão inputados as entrada ('0' e 'X')
+char tab[3][3] = {
+    {'a', 'b', 'c'},
+    {'d', 'e', 'f'},
+    {'g', 'h', 'i'}
+};
+//array para controlar a disponibilidade de casas e para verificar o ganho na horizontal, vertical ou diagonal
+char casasDisponiveis[9] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
+//contadores gerais. O v serve para contar o total de jogadas (no máximo 9 em um tab de 3x3)
+int i, j, v;
+//variaveis para auxiliar a divisão de quando cada jogador vai jogar (jogadaX e O) e para definir a modalidade de cada jogaor (MJX e O - Máquina/Jogador)
+char jogadaX, jogadaO, MJX, MJO;
+//necessário criar essa variável para, quando um jogador jogar numa casa indisponível (fora do range [a - i] ou numa casa já jogada), ele poder repetir a jogada até jogar numa casa disponível
+bool laco;
 
-    //onde serão inputados as entrada ('0' e 'X')
-    char tab[3][3] = {
-        {'a', 'b', 'c'},
-        {'d', 'e', 'f'},
-        {'g', 'h', 'i'}
-    };
-    //array para controlar a disponibilidade de casas e para verificar o ganho na horizontal, vertical ou diagonal
-    char casasDisponiveis[9] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'};
-    //contadores gerais. O v serve para contar o total de jogadas (no máximo 9 em um tab de 3x3)
-    int i, j, v;
-    //variaveis para auxiliar a divisão de quando cada jogador vai jogar (jogadaX e O) e para definir a modalidade de cada jogaor (MJX e O - Máquina/Jogador)
-    char jogadaX, jogadaO, MJX, MJO;
-    //necessário criar essa variável para, quando um jogador jogar numa casa indisponível (fora do range [a - i] ou numa casa já jogada), ele poder repetir a jogada até jogar numa casa disponível
-    bool laco;
+//-----------------------------------FUNÇÕES---------------------------------------
 
-    //-----------------------------------FUNÇÕES---------------------------------------
+//função para retornar caractere aleatório de a-i
+char retRanChar(){
+    srand((unsigned int)time(NULL));
+    return (rand() % 9) + 'a';
+}
 
-    //função para retornar caractere aleatório de a-i
-    char retRanChar(){
-        srand((unsigned int)time(NULL));
-        return (rand() % 9) + 'a';
-    }
-
-    //Função para verificar disponibilidade de casa e garante a casa não seja jogada novamente
-    bool verDis(char jogada, const char XO){
-        for(int i = 0; i < 9; i++){
-            if(jogada == casasDisponiveis[i]){
-                casasDisponiveis[i] = XO;
-                return true;
-            }
+//Função para verificar disponibilidade de casa e garante a casa não seja jogada novamente
+bool verDis(char jogada, const char XO){
+    for(int i = 0; i < 9; i++){
+        if(jogada == casasDisponiveis[i]){
+            casasDisponiveis[i] = XO;
+            return true;
         }
-        return false;
     }
+    return false;
+}
 
-    //função para Printar tabuleiro
-    void printTab(){
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
-                printf(" %c ", tab[i][j]);
-                if (j < 2){
-                    printf("|");  
-                }
-            }
-            printf("\n");
-            if(i < 2){
-                printf("-----------\n");
+//função para Printar tabuleiro
+void printTab(){
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++){
+            printf(" %c ", tab[i][j]);
+            if (j < 2){
+                printf("|");  
             }
         }
         printf("\n");
+        if(i < 2){
+            printf("-----------\n");
+        }
     }
+    printf("\n");
+}
 
-    //função para a jogada de 'X'
-    void movX(){
-        //1ª tentativa
-        if ((v % 2) == 0) {
-            printTab(tab);
-            jogadaX = '\0';
+//função para a jogada de 'X'
+void movX(){
+    //1ª tentativa
+    if ((v % 2) == 0) {
+        printTab(tab);
+        jogadaX = '\0';
 
-            //obtendo a jogada pelo modo aleatorio ou pelo modo jogador
-            switch (MJX){
-                case 'm':
-                    jogadaX = retRanChar();
-                    break;
+        //obtendo a jogada pelo modo aleatorio ou pelo modo jogador
+        switch (MJX){
+            case 'm':
+                jogadaX = retRanChar();
+                break;
 
-                case 'j':
-                    printf("Jogador 'X' sua vez.\n");
-                    printf("Escolha em qual posição do jogo o 'X' ficará:\n");                
-                    scanf(" %c", &jogadaX);
-                    break;            
-                
-                default:
-                    break;
-            }
+            case 'j':
+                printf("Jogador 'X' sua vez.\n");
+                printf("Escolha em qual posição do jogo o 'X' ficará:\n");                
+                scanf(" %c", &jogadaX);
+                break;            
+            
+            default:
+                break;
+        }
 
-            //Inserindo o X no tabuleiro (tab) se a casa estiver disponível
-            if(verDis(jogadaX, 'X') == true){
-                for (i = 0; i < 3; i++) {
-                    for (j = 0; j < 3; j++) {
-                        if (tab[i][j] == jogadaX){
-                            tab[i][j] = 'X';
-                        }
+        //Inserindo o X no tabuleiro (tab) se a casa estiver disponível
+        if(verDis(jogadaX, 'X') == true){
+            for (i = 0; i < 3; i++) {
+                for (j = 0; j < 3; j++) {
+                    if (tab[i][j] == jogadaX){
+                        tab[i][j] = 'X';
                     }
                 }
             }
-            
-            //Caso não disponível, laço while para jogar casa certa
-            else{
-                while(laco == false){
-                    printTab(tab);
-                    jogadaX = '\0';
+        }
+        
+        //Caso não disponível, laço while para jogar casa certa
+        else{
+            while(laco == false){
+                printTab(tab);
+                jogadaX = '\0';
 
-                    //obtendo a jogada pelo modo aleatorio ou pelo modo jogador
-                    switch (MJX){
-                        case 'm':
-                            jogadaX = retRanChar();
-                            break;
+                //obtendo a jogada pelo modo aleatorio ou pelo modo jogador
+                switch (MJX){
+                    case 'm':
+                        jogadaX = retRanChar();
+                        break;
 
-                        case 'j':
-                            printf("Jogada não disponível. Tente novamente.\n");
-                            printf("Escolha em qual posição do jogo o 'X' ficará:\n");
-                            scanf(" %c", &jogadaX);
-                            break;            
-                        
-                        default:
-                            break;
-                    }                    
+                    case 'j':
+                        printf("Jogada não disponível. Tente novamente.\n");
+                        printf("Escolha em qual posição do jogo o 'X' ficará:\n");
+                        scanf(" %c", &jogadaX);
+                        break;            
+                    
+                    default:
+                        break;
+                }                    
 
-                    // Inserindo o X no tabuleiro (tab)
-                    if(verDis(jogadaX, 'X') == true){
-                        laco = true;
-                        for (i = 0; i < 3; i++) {
-                            for (j = 0; j < 3; j++) {
-                                if (tab[i][j] == jogadaX) {
-                                    tab[i][j] = 'X';
-                                }
+                // Inserindo o X no tabuleiro (tab)
+                if(verDis(jogadaX, 'X') == true){
+                    laco = true;
+                    for (i = 0; i < 3; i++) {
+                        for (j = 0; j < 3; j++) {
+                            if (tab[i][j] == jogadaX) {
+                                tab[i][j] = 'X';
                             }
                         }
                     }
                 }
-                laco = false;
             }
+            laco = false;
         }
     }
-    
-    //função para a jogada de 'O'
-    void movO(){
-        //1ª tentativa
-        if ((v % 2) != 0) {
-            printTab(tab);
-            jogadaO = '\0';
+}
 
-            switch (MJO){
-                case 'm':
-                    jogadaO = retRanChar();
-                    break;
+//função para a jogada de 'O'
+void movO(){
+    //1ª tentativa
+    if ((v % 2) != 0) {
+        printTab(tab);
+        jogadaO = '\0';
 
-                case 'j':
-                    printf("Jogador 'O' sua vez.\n");
-                    printf("Escolha em qual posição do jogo o 'O' ficará:\n");
-                    scanf(" %c", &jogadaO);
-                    break;            
-                
-                default:
-                    break;
-            }  
+        switch (MJO){
+            case 'm':
+                jogadaO = retRanChar();
+                break;
 
-            //Inserindo o O no tabuleiro (tab) se a casa estiver disponível
-            if(verDis(jogadaO, 'O') == true){
-                for (i = 0; i < 3; i++) {
-                    for (j = 0; j < 3; j++) {
-                        if (tab[i][j] == jogadaO){
-                            tab[i][j] = 'O';
-                        }
+            case 'j':
+                printf("Jogador 'O' sua vez.\n");
+                printf("Escolha em qual posição do jogo o 'O' ficará:\n");
+                scanf(" %c", &jogadaO);
+                break;            
+            
+            default:
+                break;
+        }  
+
+        //Inserindo o O no tabuleiro (tab) se a casa estiver disponível
+        if(verDis(jogadaO, 'O') == true){
+            for (i = 0; i < 3; i++) {
+                for (j = 0; j < 3; j++) {
+                    if (tab[i][j] == jogadaO){
+                        tab[i][j] = 'O';
                     }
                 }
             }
-            
-            //Caso não disponível, laço while para jogar casa certa
-            else{
-                while(laco == false){
-                    printTab(tab);
-                    jogadaO = '\0';
+        }
+        
+        //Caso não disponível, laço while para jogar casa certa
+        else{
+            while(laco == false){
+                printTab(tab);
+                jogadaO = '\0';
 
-                    switch (MJO){
-                        case 'm':
-                            jogadaO = retRanChar();
-                            break;
+                switch (MJO){
+                    case 'm':
+                        jogadaO = retRanChar();
+                        break;
 
-                        case 'j':
-                            printf("Jogada não disponível. Tente novamente.\n");
-                            printf("Escolha em qual posição do jogo o 'O' ficará:\n");
-                            scanf(" %c", &jogadaO);
-                            break;            
-                        
-                        default:
-                            break;
-                    }
-                        
+                    case 'j':
+                        printf("Jogada não disponível. Tente novamente.\n");
+                        printf("Escolha em qual posição do jogo o 'O' ficará:\n");
+                        scanf(" %c", &jogadaO);
+                        break;            
+                    
+                    default:
+                        break;
+                }
+                    
 
-                    // Inserindo o O no tabuleiro (tab)
-                    if(verDis(jogadaO, 'O') == true){
-                        laco = true;
-                        for (i = 0; i < 3; i++) {
-                            for (j = 0; j < 3; j++) {
-                                if (tab[i][j] == jogadaO) {
-                                    tab[i][j] = 'O';
-                                }
+                // Inserindo o O no tabuleiro (tab)
+                if(verDis(jogadaO, 'O') == true){
+                    laco = true;
+                    for (i = 0; i < 3; i++) {
+                        for (j = 0; j < 3; j++) {
+                            if (tab[i][j] == jogadaO) {
+                                tab[i][j] = 'O';
                             }
                         }
                     }
                 }
-                laco = false;
             }
+            laco = false;
         }
     }
+}
 
-    int quemGanha(char XO){
-        //Horizontal
-        if((casasDisponiveis[0] == XO && casasDisponiveis[1] == XO && casasDisponiveis[2] == XO) || 
-        (casasDisponiveis[3] == XO && casasDisponiveis[4] == XO && casasDisponiveis[5] == XO) ||
-        (casasDisponiveis[6] == XO && casasDisponiveis[7] == XO && casasDisponiveis[8] == XO)
-        ){
-            return 1;
-        } 
-        //vertical
-        else if((casasDisponiveis[0] == XO && casasDisponiveis[3] == XO && casasDisponiveis[6] == XO) || 
-        (casasDisponiveis[1] == XO && casasDisponiveis[4] == XO && casasDisponiveis[7] == XO) ||
-        (casasDisponiveis[2] == XO && casasDisponiveis[5] == XO && casasDisponiveis[8] == XO)
-        ){
-            return 2;
-        }
-        //diagonal
-        else if((casasDisponiveis[0] == XO && casasDisponiveis[4] == XO && casasDisponiveis[8] == XO) || 
-        (casasDisponiveis[2] == XO && casasDisponiveis[4] == XO && casasDisponiveis[6] == XO)
-        ){
-            return 3;
-        }
-        return 0;
+int quemGanha(char XO){
+    //Horizontal
+    if((casasDisponiveis[0] == XO && casasDisponiveis[1] == XO && casasDisponiveis[2] == XO) || 
+    (casasDisponiveis[3] == XO && casasDisponiveis[4] == XO && casasDisponiveis[5] == XO) ||
+    (casasDisponiveis[6] == XO && casasDisponiveis[7] == XO && casasDisponiveis[8] == XO)
+    ){
+        return 1;
+    } 
+    //vertical
+    else if((casasDisponiveis[0] == XO && casasDisponiveis[3] == XO && casasDisponiveis[6] == XO) || 
+    (casasDisponiveis[1] == XO && casasDisponiveis[4] == XO && casasDisponiveis[7] == XO) ||
+    (casasDisponiveis[2] == XO && casasDisponiveis[5] == XO && casasDisponiveis[8] == XO)
+    ){
+        return 2;
     }
+    //diagonal
+    else if((casasDisponiveis[0] == XO && casasDisponiveis[4] == XO && casasDisponiveis[8] == XO) || 
+    (casasDisponiveis[2] == XO && casasDisponiveis[4] == XO && casasDisponiveis[6] == XO)
+    ){
+        return 3;
+    }
+    return 0;
+}
 
-    //----------------------------------FIM DE FUNÇÕES-------------------------------------------
+//-----------------------------------FIM DE FUNÇÕES---------------------------------------
 
-    //----------------------------------PROGRAMA-------------------------------------------
+int main(){
 
     //Apresentação
     printf("\nEis o tabuleiro de Jogo da Velha onde iremos jogar:\n\n");
